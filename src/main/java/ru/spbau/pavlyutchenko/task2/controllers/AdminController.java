@@ -9,6 +9,8 @@ import ru.spbau.pavlyutchenko.task2.service.CategoryService;
 import ru.spbau.pavlyutchenko.task2.service.PostService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -25,5 +27,17 @@ public class AdminController {
     @RequestMapping(value = "/category", method = RequestMethod.DELETE)
     public void deleteCategory(@RequestParam Long categoryId) {
         categoryRepository.delete(categoryId);
+    }
+
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    @RequestMapping(value = "/category", method=RequestMethod.PUT)
+    public void editCategory(@RequestParam Long categoryId, @RequestBody @Valid Category category) {
+        Category updateCategory = categoryRepository.findOne(categoryId);
+        updateCategory.setTitle(category.getTitle());
+        categoryRepository.save(updateCategory);
     }
 }
