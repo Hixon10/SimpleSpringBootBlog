@@ -25,7 +25,7 @@ public class IndexController {
         categoryService.create("category 3");
         Long val = counter.incrementAndGet();
         Category category = categoryService.findByTitle("category 2");
-        return val.toString() + name + category.getTitle();
+        return "10" + val.toString() + name + category.getTitle();
     }
 
 }
