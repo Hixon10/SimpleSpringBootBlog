@@ -40,7 +40,7 @@ function insertPosts(posts) {
     for (var i = 0; i < posts.length; i++) {
         postsHtml += '<div class="blog-post">';
         postsHtml += '<h2 class="blog-post-title">' + posts[i].title + '</h2>';
-        postsHtml += '<p class="blog-post-meta">' + posts[i].createdDate.month + ' ' + posts[i].createdDate.dayOfMonth + ', ' + posts[i].createdDate.year + ' by <a href="#">Chris</a></p>';
+        postsHtml += '<p class="blog-post-meta">' + posts[i].createdDate.month + ' ' + posts[i].createdDate.dayOfMonth + ', ' + posts[i].createdDate.year + '</p>';
         postsHtml += '<div>' + posts[i].content + '</div>';
         postsHtml += '</div>';
     }

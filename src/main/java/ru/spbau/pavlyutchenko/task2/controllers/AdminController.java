@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbau.pavlyutchenko.task2.domain.Account;
 import ru.spbau.pavlyutchenko.task2.domain.Category;
 import ru.spbau.pavlyutchenko.task2.domain.Post;
+import ru.spbau.pavlyutchenko.task2.service.AccountRepository;
 import ru.spbau.pavlyutchenko.task2.service.AccountService;
 import ru.spbau.pavlyutchenko.task2.service.CategoryRepository;
 import ru.spbau.pavlyutchenko.task2.service.PostRepository;
@@ -13,6 +14,7 @@ import ru.spbau.pavlyutchenko.task2.service.PostRepository;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
@@ -26,10 +28,19 @@ public class AdminController {
     private CategoryRepository categoryRepository;
 
     @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
     private PostRepository postRepository;
 
-    @RequestMapping(value = "/post", method=RequestMethod.PUT)
-    public void editPost(@RequestParam Long categoryId, @RequestParam Long postId, @RequestBody @Valid Post post) {
+    @RequestMapping(value = "/post/{login}/{password}", method=RequestMethod.PUT)
+    public void editPost(@PathVariable("login") String login, @PathVariable("password") String password,
+                         @RequestParam Long categoryId, @RequestParam Long postId, @RequestBody @Valid Post post) {
+        Account account = new Account(login, password);
+        if (!accountService.isValid(account)) {
+            throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
+        }
+
         Post updatePost = postRepository.findOne(postId);
         Category category = categoryRepository.findOne(categoryId);
 
@@ -40,10 +51,17 @@ public class AdminController {
         postRepository.save(updatePost);
     }
 
-    @RequestMapping(value = "/post", method = RequestMethod.POST)
-    public void createPost(@RequestParam Long categoryId, @RequestBody @Valid Post post) {
+    @RequestMapping(value = "/post/{login}/{password}", method = RequestMethod.POST)
+    public void createPost(@PathVariable("login") String login, @PathVariable("password") String password,
+                           @RequestParam Long categoryId, @RequestBody @Valid Post post) {
+        Optional<Account> account = accountRepository.findByLogin(login);
+        if (!account.isPresent() || !accountService.isValid(account.get())) {
+            throw new IllegalArgumentException("Account with login " + login + " not found.");
+        }
+
         Category category = categoryRepository.findOne(categoryId);
         post.setCategory(category);
+        post.setAccount(account.get());
         post.setCreatedDate(LocalDateTime.now());
 
         postRepository.save(post);
@@ -54,13 +72,18 @@ public class AdminController {
         return postRepository.findAll();
     }
 
-    @RequestMapping(value = "/post", method = RequestMethod.DELETE)
-    public void deletePost(@RequestParam Long postId) {
+    @RequestMapping(value = "/post/{login}/{password}", method = RequestMethod.DELETE)
+    public void deletePost(@PathVariable("login") String login, @PathVariable("password") String password, @RequestParam Long postId) {
+        Account account = new Account(login, password);
+        if (!accountService.isValid(account)) {
+            throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
+        }
+
         postRepository.delete(postId);
     }
 
     @RequestMapping(value = "/category/{login}/{password}", method = RequestMethod.POST)
-    public void createCategory(@PathVariable("login")  String login, @PathVariable("password") String password, @RequestBody @Valid Category category) {
+    public void createCategory(@PathVariable("login") String login, @PathVariable("password") String password, @RequestBody @Valid Category category) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {
             throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
@@ -70,7 +93,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/category/{login}/{password}", method = RequestMethod.DELETE)
-    public void deleteCategory(@PathVariable("login")  String login, @PathVariable("password") String password, @RequestParam Long categoryId) {
+    public void deleteCategory(@PathVariable("login") String login, @PathVariable("password") String password, @RequestParam Long categoryId) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {
             throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
@@ -85,7 +108,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/category/{login}/{password}", method=RequestMethod.PUT)
-    public void editCategory(@PathVariable("login")  String login, @PathVariable("password") String password,
+    public void editCategory(@PathVariable("login") String login, @PathVariable("password") String password,
                              @RequestParam Long categoryId, @RequestBody @Valid Category category) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {

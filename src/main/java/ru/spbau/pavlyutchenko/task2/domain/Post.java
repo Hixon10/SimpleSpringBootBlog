@@ -41,7 +41,6 @@ public class Post {
     @ManyToOne
     private Category category;
 
-    @NotNull
     @JsonIgnore
     @ManyToOne
     private Account account;

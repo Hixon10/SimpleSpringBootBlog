@@ -100,7 +100,7 @@ function updatePost() {
             'Content-Type': 'application/json'
         },
         'type': 'PUT',
-        'url': '/admin/post?categoryId=' + categoryId + '&postId=' + id,
+        'url': '/admin/post/' + getLogin() + '/' + getPassword() + '?categoryId=' + categoryId + '&postId=' + id,
         'async': false,
         'data': JSON.stringify({'title': title, 'content': content}),
         'dataType': 'json',
@@ -128,7 +128,7 @@ function deletePost(id) {
             'Content-Type': 'application/json'
         },
         'type': 'DELETE',
-        'url': '/admin/post?postId=' + id,
+        'url': '/admin/post/' + getLogin() + '/' + getPassword() + '?postId=' + id,
         'async': false,
         'dataType': 'json',
         success: function(result) {
@@ -150,7 +150,7 @@ function createPost() {
             'Content-Type': 'application/json'
         },
         'type': 'POST',
-        'url': '/admin/post?categoryId=' + id,
+        'url': '/admin/post/' + getLogin() + '/' + getPassword() + '?categoryId=' + id,
         'async': false,
         'data': JSON.stringify({'title': title, content: content}),
         'dataType': 'json',
@@ -332,16 +332,20 @@ function init() {
     }
 }
 
+function logout() {
+    $('#registerLink').removeClass('hidden');
+    $('#loginLink').removeClass('hidden');
+
+    $('#logoutLink').addClass('hidden');
+    setLogin("");
+    setPassword("");
+}
+
 $(document).ready(function() {
     init();
 
     $('#logoutLink').click(function(){
-        $('#registerLink').removeClass('hidden');
-        $('#loginLink').removeClass('hidden');
-
-        $('#logoutLink').addClass('hidden');
-        setLogin("");
-        setPassword("");
+        logout();
     });
 
     $('#loginButton').on('click', function () {
