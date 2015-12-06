@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -33,7 +34,9 @@ public class Post {
     @Size(min=10)
     private String content;
 
-    //    @JsonIgnore
+    private LocalDateTime createdDate;
+
+    @JsonIgnore
     @ManyToOne
     private Category category;
 
@@ -55,5 +58,21 @@ public class Post {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

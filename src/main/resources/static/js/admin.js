@@ -3,8 +3,88 @@ var posts = [];
 var categories = [];
 
 
+function updatePost() {
+    var title = $('#updatedPostTitle').val();
+    var id = $("#updatePost").data('post_id');
+    var content = $('#updatedPostContent').val();
+    var categoryId = $("#updatedPostCategory").find('option:selected').val();
+
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'PUT',
+        'url': '/admin/post?categoryId=' + categoryId + '&postId=' + id,
+        'async': false,
+        'data': JSON.stringify({'title': title, 'content': content}),
+        'dataType': 'json',
+        success: function(result) {
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            var response = jqXHR.responseText;
+
+            if (response) {
+                response = JSON.parse(response);
+                response = response["errors"][0];
+                var message = response["defaultMessage"];
+                alert(message);
+            }
+        }
+    });
+
+    location.reload(true);
+}
+
+function deletePost(id) {
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'DELETE',
+        'url': '/admin/post?postId=' + id,
+        'async': false,
+        'dataType': 'json',
+        success: function(result) {
+
+        }
+    });
+
+    location.reload(true);
+}
+
 function createPost() {
-	
+    var title = $('#postTitle').val();
+    var content = $('#postContent').val();
+    var id = $("#postCategory").find('option:selected').val();
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'POST',
+        'url': '/admin/post?categoryId=' + id,
+        'async': false,
+        'data': JSON.stringify({'title': title, content: content}),
+        'dataType': 'json',
+        success: function(result) {
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            var response = jqXHR.responseText;
+
+            if (response) {
+                response = JSON.parse(response);
+                response = response["errors"][0];
+                var message = response["defaultMessage"];
+                alert(message);
+            }
+        }
+    });
+
+    location.reload(true);
 }
 
 function updateCategory() {
@@ -86,7 +166,7 @@ function deleteCategory(id) {
     location.reload(true);
 }
 
-function init() {
+function initCategories() {
     $.ajax({
         headers: {
             'Accept': 'application/json',
@@ -125,10 +205,85 @@ function init() {
 
     $('#categoriesTable > tbody:last-child').append(htmlCategories);
     $("#postCategory").html(selectCategories);
+    $("#updatedPostCategory").html(selectCategories);
+}
+
+function initPosts() {
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'GET',
+        'url': '/admin/post',
+        'async': false,
+        'dataType': 'json',
+        success: function(result) {
+            posts = result;
+        }
+    });
+
+    var postsHtml = "";
+
+    for (var i = 0; i < posts.length; i++) {
+        postsHtml += '<tr>';
+        postsHtml += '<td>' + posts[i].title + '</td>';
+        postsHtml += '<td>' + posts[i].createdDate.month + ' ' + posts[i].createdDate.dayOfMonth + ', ' + posts[i].createdDate.year + '</td>';
+        postsHtml += '<td>';
+        postsHtml += '<button data-post_id="' + posts[i].id + '" type="button" class="updatePostButton btn btn-default btn-xs">Редактировать</button>';
+        postsHtml += '</td>';
+        postsHtml += '<td>';
+        postsHtml += '<button data-post_id="' + posts[i].id + '" type="button" class="deletePostButton btn btn-danger btn-xs">Удалить</button>';
+        postsHtml += '</td>';
+        postsHtml += '</tr>';
+    }
+
+    $('#postsTable > tbody:last-child').append(postsHtml);
+}
+
+function init() {
+    initCategories();
+    initPosts();
 }
 
 $(document).ready(function() {
     init();
+
+    $("#updatePost").click(function(){
+        updatePost();
+    });
+
+    $(".updatePostButton").click(function(){
+        var $el = $(this);
+        var id = $el.data('post_id');
+        var title = "";
+        var content = "";
+
+        for (var i = 0; i < posts.length; i++) {
+            if (posts[i].id == id) {
+                title = posts[i].title;
+                content = posts[i].content;
+                break;
+            }
+        }
+
+        $("#updatePost").data('post_id', id);
+        $("#updatedPostTitle").val(title);
+        $("#updatedPostContent").val(content);
+
+        $('#updatePostModal').modal('toggle');
+    });
+
+    $('.deletePostButton').on('click', function () {
+        var $el = $(this);
+        var id = $el.data('post_id');
+        deletePost(id);
+    });
+
+    $(".createPost").click(function(){
+        createPost();
+        $('#editPostModal').modal('toggle');
+    });
 
     $("#saveCategory").click(function(){
         createCategory();
