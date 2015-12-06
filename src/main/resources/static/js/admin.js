@@ -161,9 +161,7 @@ function createPost() {
 
             if (response) {
                 response = JSON.parse(response);
-                response = response["errors"][0];
-                var message = response["defaultMessage"];
-                alert(message);
+                alert(response.message);
             }
         }
     });
@@ -192,9 +190,7 @@ function updateCategory() {
 
             if (response) {
                 response = JSON.parse(response);
-                response = response["errors"][0];
-                var message = response["defaultMessage"];
-                alert(message);
+                alert(response.message);
             }
         }
     });
@@ -222,9 +218,7 @@ function createCategory() {
 
             if (response) {
                 response = JSON.parse(response);
-                response = response["errors"][0];
-                var message = response["defaultMessage"];
-                alert(message);
+                alert(response.message);
             }
         }
     });
