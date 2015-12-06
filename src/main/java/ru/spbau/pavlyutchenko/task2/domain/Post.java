@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 public class Post {
 
-    public Post(String title, String content, Category category) {
+    public Post(String title, String content, Category category, Account account) {
         this.title = title;
         this.content = content;
         this.category = category;
+        this.account = account;
     }
 
     Post() {}
@@ -39,6 +40,11 @@ public class Post {
     @JsonIgnore
     @ManyToOne
     private Category category;
+
+    @NotNull
+    @JsonIgnore
+    @ManyToOne
+    private Account account;
 
     public Long getId() {
         return id;
@@ -74,5 +80,13 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

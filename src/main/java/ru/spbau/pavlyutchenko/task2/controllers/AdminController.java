@@ -3,8 +3,10 @@ package ru.spbau.pavlyutchenko.task2.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.spbau.pavlyutchenko.task2.domain.Account;
 import ru.spbau.pavlyutchenko.task2.domain.Category;
 import ru.spbau.pavlyutchenko.task2.domain.Post;
+import ru.spbau.pavlyutchenko.task2.service.AccountService;
 import ru.spbau.pavlyutchenko.task2.service.CategoryRepository;
 import ru.spbau.pavlyutchenko.task2.service.PostRepository;
 
@@ -15,6 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
+
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -54,12 +60,22 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.POST)
-    public void createCategory(@RequestBody @Valid Category category) {
+    public void createCategory(@RequestBody @Valid Category category, @RequestParam String login, @RequestParam String password) {
+        Account account = new Account(login, password);
+        if (!accountService.isValid(account)) {
+            throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
+        }
+
         categoryRepository.save(category);
     }
 
     @RequestMapping(value = "/category", method = RequestMethod.DELETE)
-    public void deleteCategory(@RequestParam Long categoryId) {
+    public void deleteCategory(@RequestParam Long categoryId, @RequestParam String login, @RequestParam String password) {
+        Account account = new Account(login, password);
+        if (!accountService.isValid(account)) {
+            throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
+        }
+
         categoryRepository.delete(categoryId);
     }
 
@@ -69,7 +85,13 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/category", method=RequestMethod.PUT)
-    public void editCategory(@RequestParam Long categoryId, @RequestBody @Valid Category category) {
+    public void editCategory(@RequestParam Long categoryId, @RequestBody @Valid Category category,
+                             @RequestParam String login, @RequestParam String password) {
+        Account account = new Account(login, password);
+        if (!accountService.isValid(account)) {
+            throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
+        }
+
         Category updateCategory = categoryRepository.findOne(categoryId);
         updateCategory.setTitle(category.getTitle());
         categoryRepository.save(updateCategory);
