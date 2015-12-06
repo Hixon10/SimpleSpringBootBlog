@@ -179,7 +179,7 @@ function updateCategory() {
             'Content-Type': 'application/json'
         },
         'type': 'PUT',
-        'url': '/admin/category?categoryId=' + id,
+        'url': '/admin/category/' + getLogin() + '/' + getPassword() + '?categoryId=' + id,
         'async': false,
         'data': JSON.stringify({'title': title}),
         'dataType': 'json',
@@ -207,7 +207,7 @@ function createCategory() {
             'Content-Type': 'application/json'
         },
         'type': 'POST',
-        'url': '/admin/category',
+        'url': '/admin/category/' + getLogin() + '/' + getPassword(),
         'async': false,
         'data': JSON.stringify({'title': title}),
         'dataType': 'json',
@@ -233,7 +233,7 @@ function deleteCategory(id) {
             'Content-Type': 'application/json'
         },
         'type': 'DELETE',
-        'url': '/admin/category?categoryId=' + id,
+        'url': '/admin/category/' + getLogin() + '/' + getPassword() + '?categoryId=' + id,
         'async': false,
         'dataType': 'json',
         success: function(result) {

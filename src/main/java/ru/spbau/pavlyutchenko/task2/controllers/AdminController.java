@@ -59,8 +59,8 @@ public class AdminController {
         postRepository.delete(postId);
     }
 
-    @RequestMapping(value = "/category", method = RequestMethod.POST)
-    public void createCategory(@RequestBody @Valid Category category, @RequestParam String login, @RequestParam String password) {
+    @RequestMapping(value = "/category/{login}/{password}", method = RequestMethod.POST)
+    public void createCategory(@PathVariable("login")  String login, @PathVariable("password") String password, @RequestBody @Valid Category category) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {
             throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
@@ -69,8 +69,8 @@ public class AdminController {
         categoryRepository.save(category);
     }
 
-    @RequestMapping(value = "/category", method = RequestMethod.DELETE)
-    public void deleteCategory(@RequestParam Long categoryId, @RequestParam String login, @RequestParam String password) {
+    @RequestMapping(value = "/category/{login}/{password}", method = RequestMethod.DELETE)
+    public void deleteCategory(@PathVariable("login")  String login, @PathVariable("password") String password, @RequestParam Long categoryId) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {
             throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
@@ -84,9 +84,9 @@ public class AdminController {
         return categoryRepository.findAll();
     }
 
-    @RequestMapping(value = "/category", method=RequestMethod.PUT)
-    public void editCategory(@RequestParam Long categoryId, @RequestBody @Valid Category category,
-                             @RequestParam String login, @RequestParam String password) {
+    @RequestMapping(value = "/category/{login}/{password}", method=RequestMethod.PUT)
+    public void editCategory(@PathVariable("login")  String login, @PathVariable("password") String password,
+                             @RequestParam Long categoryId, @RequestBody @Valid Category category) {
         Account account = new Account(login, password);
         if (!accountService.isValid(account)) {
             throw new IllegalArgumentException("Account with login " + account.getLogin() + " not found.");
