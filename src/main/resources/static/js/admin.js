@@ -1,9 +1,23 @@
+"use strict";
 
 var posts = [];
 var categories = [];
 
-var login = "";
-var password = "";
+function getLogin() {
+    return Cookies.get('login');
+}
+
+function setLogin(login) {
+    Cookies.set('login', login, { expires: 7 });
+}
+
+function getPassword() {
+    return Cookies.get('password');
+}
+
+function setPassword(pas) {
+    Cookies.set('password', pas, { expires: 7 });
+}
 
 function loginF() {
     var log  = $('#loginLogin').val();
@@ -32,14 +46,14 @@ function loginF() {
         }
     });
 
-    login = log;
-    password = pas;
+    setLogin(log);
+    setPassword(pas);
 
     $('#registerLink').addClass('hidden');
     $('#loginLink').addClass('hidden');
 
     $('#logoutLink').removeClass('hidden');
-    $('#logoutLink').text('Привет, ' + login + '. Выйти.');
+    $('#logoutLink').text('Привет, ' + getLogin() + '. Выйти.');
 
     $('#loginModal').modal('toggle');
 }
@@ -314,6 +328,14 @@ function initPosts() {
 function init() {
     initCategories();
     initPosts();
+
+    if (getLogin()) {
+        $('#registerLink').addClass('hidden');
+        $('#loginLink').addClass('hidden');
+
+        $('#logoutLink').removeClass('hidden');
+        $('#logoutLink').text('Привет, ' + getLogin() + '. Выйти.');
+    }
 }
 
 $(document).ready(function() {
@@ -324,8 +346,8 @@ $(document).ready(function() {
         $('#loginLink').removeClass('hidden');
 
         $('#logoutLink').addClass('hidden');
-        login = "";
-        password = "";
+        setLogin("");
+        setPassword("");
     });
 
     $('#loginButton').on('click', function () {

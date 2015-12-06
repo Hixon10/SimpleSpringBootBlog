@@ -1,3 +1,5 @@
+"use strict";
+
 
 var posts = [];
 var categories = [];
