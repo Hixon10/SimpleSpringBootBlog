@@ -2,6 +2,76 @@
 var posts = [];
 var categories = [];
 
+var login = "";
+var password = "";
+
+function loginF() {
+    var log  = $('#loginLogin').val();
+    var pas = $('#passwordLogin').val();
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'POST',
+        'url': '/account/login',
+        'async': false,
+        'data': JSON.stringify({'login': log, 'password': pas}),
+        'dataType': 'json',
+        success: function(result) {
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            var response = jqXHR.responseText;
+
+            if (response) {
+                response = JSON.parse(response);
+                alert(response.message);
+                location.reload(true);
+            }
+        }
+    });
+
+    login = log;
+    password = pas;
+
+    $('#registerLink').addClass('hidden');
+    $('#loginLink').addClass('hidden');
+
+    $('#logoutLink').removeClass('hidden');
+    $('#logoutLink').text('Привет, ' + login + '. Выйти.');
+
+    $('#loginModal').modal('toggle');
+}
+
+function register() {
+    var login = $('#login').val();
+    var password = $('#password').val();
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'POST',
+        'url': '/account/register',
+        'async': false,
+        'data': JSON.stringify({'login': login, 'password': password}),
+        'dataType': 'json',
+        success: function(result) {
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            var response = jqXHR.responseText;
+
+            if (response) {
+                response = JSON.parse(response);
+                alert(response.message);
+            }
+        }
+    });
+
+    location.reload(true);
+}
 
 function updatePost() {
     var title = $('#updatedPostTitle').val();
@@ -248,6 +318,31 @@ function init() {
 
 $(document).ready(function() {
     init();
+
+    $('#logoutLink').click(function(){
+        $('#registerLink').removeClass('hidden');
+        $('#loginLink').removeClass('hidden');
+
+        $('#logoutLink').addClass('hidden');
+        login = "";
+        password = "";
+    });
+
+    $('#loginButton').on('click', function () {
+        loginF();
+    });
+
+    $("#loginLink").click(function(){
+        $('#loginModal').modal('toggle');
+    });
+
+    $('#registerButton').on('click', function () {
+        register();
+    });
+
+    $("#registerLink").click(function(){
+        $('#registerModal').modal('toggle');
+    });
 
     $("#updatePost").click(function(){
         updatePost();
