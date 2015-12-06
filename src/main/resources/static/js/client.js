@@ -57,6 +57,23 @@ function insertAllCategories() {
     $('#categoryList').html(categoriesHtml);
 }
 
+function searchPosts() {
+    var query = $('#s').val();
+
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'GET',
+        'url': '/post/search?query=' + query,
+        'dataType': 'json',
+        success: function(result) {
+            insertPosts(result);
+        }
+    });
+}
+
 $(document).ready(function() {
     init();
     insertPosts(posts);
@@ -64,6 +81,11 @@ $(document).ready(function() {
 
     $("#homePageLink").click(function(){
         insertPosts(posts);
+    });
+
+    $("#searchButton").click(function(){
+        searchPosts();
+        return false;
     });
 
     $('body').on('click', 'a.categoryLink', function() {

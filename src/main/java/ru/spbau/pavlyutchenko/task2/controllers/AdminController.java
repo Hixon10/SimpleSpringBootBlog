@@ -6,13 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbau.pavlyutchenko.task2.domain.Category;
 import ru.spbau.pavlyutchenko.task2.domain.Post;
 import ru.spbau.pavlyutchenko.task2.service.CategoryRepository;
-import ru.spbau.pavlyutchenko.task2.service.CategoryService;
 import ru.spbau.pavlyutchenko.task2.service.PostRepository;
-import ru.spbau.pavlyutchenko.task2.service.PostService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
