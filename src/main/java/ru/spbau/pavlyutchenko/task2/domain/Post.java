@@ -33,7 +33,7 @@ public class Post {
     @Size(min=10)
     private String content;
 
-    @JsonIgnore
+    //    @JsonIgnore
     @ManyToOne
     private Category category;
 
@@ -51,5 +51,9 @@ public class Post {
 
     public Category getCategory() {
         return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
